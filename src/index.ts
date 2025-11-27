@@ -1,5 +1,7 @@
-import { createExpressApp } from './app.js';
-import { DependencyProvider } from './dependencyProvider.js';
+import "dotenv/config";
+
+import { createExpressApp } from "./app.js";
+import { DependencyProvider } from "./dependencyProvider.js";
 
 const port = process.env.PORT || 3000;
 
