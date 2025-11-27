@@ -28,65 +28,73 @@ describe("CheckDatabaseConnectionUseCase", () => {
   });
 
   describe("execute", () => {
-    it("should return true when repository returns true", async () => {
-      // Arrange
-      mockRepository.isDatabaseConnected.mockResolvedValue(true);
+    describe("responds correctly", () => {
+      it("should return true when repository returns true", async () => {
+        // Arrange
+        mockRepository.isDatabaseConnected.mockResolvedValue(true);
 
-      // Act
-      const result = await useCase.execute();
+        // Act
+        const result = await useCase.execute();
 
-      // Assert
-      expect(result).toBe(true);
-      expect(mockRepository.isDatabaseConnected).toHaveBeenCalledTimes(1);
+        // Assert
+        expect(result).toBe(true);
+        expect(mockRepository.isDatabaseConnected).toHaveBeenCalledTimes(1);
+      });
+
+      it("should return false when repository returns false", async () => {
+        // Arrange
+        mockRepository.isDatabaseConnected.mockResolvedValue(false);
+
+        // Act
+        const result = await useCase.execute();
+
+        // Assert
+        expect(result).toBe(false);
+        expect(mockRepository.isDatabaseConnected).toHaveBeenCalledTimes(1);
+      });
     });
 
-    it("should return false when repository returns false", async () => {
-      // Arrange
-      mockRepository.isDatabaseConnected.mockResolvedValue(false);
+    describe("handles errors", () => {
+      it("should return false when repository throws an error", async () => {
+        // Arrange
+        mockRepository.isDatabaseConnected.mockRejectedValue(
+          new Error("Connection error")
+        );
 
-      // Act
-      const result = await useCase.execute();
+        // Act
+        const result = await useCase.execute();
 
-      // Assert
-      expect(result).toBe(false);
-      expect(mockRepository.isDatabaseConnected).toHaveBeenCalledTimes(1);
+        // Assert
+        expect(result).toBe(false);
+        expect(mockRepository.isDatabaseConnected).toHaveBeenCalledTimes(1);
+      });
+
+      it("should return false when repository throws non-Error objects", async () => {
+        // Arrange
+        mockRepository.isDatabaseConnected.mockRejectedValue(
+          "Connection failed"
+        );
+
+        // Act
+        const result = await useCase.execute();
+
+        // Assert
+        expect(result).toBe(false);
+        expect(mockRepository.isDatabaseConnected).toHaveBeenCalledTimes(1);
+      });
     });
 
-    it("should return false when repository throws an error", async () => {
-      // Arrange
-      mockRepository.isDatabaseConnected.mockRejectedValue(
-        new Error("Connection error")
-      );
+    describe("delayed responses", () => {
+      it("should handle repository returning delayed response", async () => {
+        // Arrange
+        mockRepository.isDatabaseConnected.mockImplementation(
+          () => new Promise((resolve) => setTimeout(() => resolve(true), 1000))
+        );
 
-      // Act
-      const result = await useCase.execute();
-
-      // Assert
-      expect(result).toBe(false);
-      expect(mockRepository.isDatabaseConnected).toHaveBeenCalledTimes(1);
-    });
-
-    it("should handle repository throwing non-Error objects", async () => {
-      // Arrange
-      mockRepository.isDatabaseConnected.mockRejectedValue("Connection failed");
-
-      // Act
-      const result = await useCase.execute();
-
-      // Assert
-      expect(result).toBe(false);
-      expect(mockRepository.isDatabaseConnected).toHaveBeenCalledTimes(1);
-    });
-
-    it("should handle repository returning delayed response", async () => {
-      // Arrange
-      mockRepository.isDatabaseConnected.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve(true), 1000))
-      );
-
-      // Act & Assert
-      await expect(useCase.execute()).resolves.toBe(true);
-      expect(mockRepository.isDatabaseConnected).toHaveBeenCalledTimes(1);
+        // Act & Assert
+        await expect(useCase.execute()).resolves.toBe(true);
+        expect(mockRepository.isDatabaseConnected).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });
