@@ -1,4 +1,5 @@
 import type { HealthCheckRepository } from '../application/healthCheckRepository.js';
+import { DatabaseConnectionError } from '../core/databaseConnectionError.js';
 import { Pool } from 'pg';
 
 export class HealthCheckRepositoryImpl implements HealthCheckRepository {
@@ -19,7 +20,7 @@ export class HealthCheckRepositoryImpl implements HealthCheckRepository {
       await this.pool.query('SELECT 1');
       return true;
     } catch {
-      return false;
+      throw new DatabaseConnectionError('Unable to connect to the database');
     }
   }
 
@@ -30,7 +31,7 @@ export class HealthCheckRepositoryImpl implements HealthCheckRepository {
       const result = await this.pool.query(`SELECT 1 FROM ${tableName} LIMIT 1`);
       return result.rows[0].exists === true;
     } catch {
-      return false;
+      throw new DatabaseConnectionError('Unable to check required data');
     }
   }
 }
