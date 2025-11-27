@@ -16,6 +16,7 @@ export class HealthCheckRepositoryImpl implements HealthCheckRepository {
 
   async isDatabaseConnected(): Promise<boolean> {
     try {
+      await this.pool.query('SELECT 1');
       return true;
     } catch {
       return false;
@@ -23,8 +24,11 @@ export class HealthCheckRepositoryImpl implements HealthCheckRepository {
   }
 
   async hasRequiredData(): Promise<boolean> {
+    const tableName = process.env.TASK_TABLE;
+    if (!tableName) return false;
     try {
-        return true;
+      const result = await this.pool.query(`SELECT 1 FROM ${tableName} LIMIT 1`);
+      return result.rows[0].exists === true;
     } catch {
       return false;
     }
