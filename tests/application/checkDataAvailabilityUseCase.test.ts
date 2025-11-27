@@ -81,7 +81,7 @@ describe("CheckDataAvailabilityUseCase", () => {
     it("should handle repository returning delayed response", async () => {
       // Arrange
       mockRepository.hasRequiredData.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve(true), 10))
+        () => new Promise((resolve) => setTimeout(() => resolve(true), 1000))
       );
 
       // Act & Assert
