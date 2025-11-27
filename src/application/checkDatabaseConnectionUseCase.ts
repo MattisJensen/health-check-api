@@ -1,5 +1,4 @@
 import type { HealthCheckRepository } from "./healthCheckRepository.js";
-import { DatabaseConnectionError } from "../core/databaseConnectionError.js";
 
 export class CheckDatabaseConnectionUseCase {
   private repository: HealthCheckRepository;
