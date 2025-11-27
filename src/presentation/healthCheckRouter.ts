@@ -10,7 +10,7 @@ export function createHealthCheckRouter(
 ) {
   const router = Router();
 
-  router.get("/api/health", async (req: Request, res: Response) => {
+  router.get("/", async (req: Request, res: Response) => {
     const status = new HealthStatusDTO();
 
     try {
