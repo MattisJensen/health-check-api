@@ -25,11 +25,11 @@ export class HealthCheckRepositoryImpl implements HealthCheckRepository {
   }
 
   async hasRequiredData(): Promise<boolean> {
-    const tableName = process.env.TASK_TABLE;
+    const tableName = process.env.TABLE_TASK;
     if (!tableName) return false;
     try {
       const result = await this.pool.query(`SELECT 1 FROM ${tableName} LIMIT 1`);
-      return result.rows[0].exists === true;
+      return result.rows.length > 0;
     } catch {
       throw new DatabaseConnectionError('Unable to check required data');
     }
