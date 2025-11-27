@@ -12,9 +12,7 @@ export class CheckDataAvailabilityUseCase {
     try {
       return await this.repository.hasRequiredData();
     } catch {
-      throw new DatabaseConnectionError(
-        "Failed to check required data availability"
-      );
+      return false;
     }
   }
 }

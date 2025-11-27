@@ -12,7 +12,7 @@ export class CheckDatabaseConnectionUseCase {
     try {
       return await this.repository.isDatabaseConnected();
     } catch {
-      throw new DatabaseConnectionError("Failed to connect to the database");
+      return false;
     }
   }
 }
