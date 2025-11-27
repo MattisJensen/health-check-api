@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { Router } from "express";
+import rateLimit from "express-rate-limit";
 import { CheckDatabaseConnectionUseCase } from "../application/checkDatabaseConnectionUseCase.js";
 import { CheckDataAvailabilityUseCase } from "../application/checkDataAvailabilityUseCase.js";
 import { HealthStatusDTO } from "./dto/healthStatusDTO.js";
@@ -10,7 +11,14 @@ export function createHealthCheckRouter(
 ) {
   const router = Router();
 
-  router.get("/", async (req: Request, res: Response) => {
+  const limiter = rateLimit({
+    windowMs: 10 * 1000, // 10 seconds
+    limit: 1, // each IP can make up to 1 requests per `windowsMs`
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  router.get("/", limiter, async (req: Request, res: Response) => {
     const rawQuery = req.query.query;
 
     // Verify Query
