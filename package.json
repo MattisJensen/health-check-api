@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "@types/pg": "^8.15.6",
     "dotenv": "^17.2.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
