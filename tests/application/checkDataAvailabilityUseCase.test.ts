@@ -1,4 +1,11 @@
-import { describe, it, expect, beforeEach, afterEach, jest } from "@jest/globals";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  jest,
+} from "@jest/globals";
 import type { HealthCheckRepository } from "../../src/application/healthCheckRepository.js";
 import { CheckDataAvailabilityUseCase } from "../../src/application/checkDataAvailabilityUseCase.js";
 
@@ -8,10 +15,10 @@ describe("CheckDataAvailabilityUseCase", () => {
 
   beforeEach(() => {
     // Mock repository with proper type safety
-      mockRepository = {
-        hasRequiredData: jest.fn(),
-        isDatabaseConnected: jest.fn(),
-      } as jest.Mocked<HealthCheckRepository>;
+    mockRepository = {
+      hasRequiredData: jest.fn(),
+      isDatabaseConnected: jest.fn(),
+    } as jest.Mocked<HealthCheckRepository>;
 
     useCase = new CheckDataAvailabilityUseCase(mockRepository);
   });
@@ -47,9 +54,7 @@ describe("CheckDataAvailabilityUseCase", () => {
 
     it("should return false when repository throws an error", async () => {
       // Arrange
-      mockRepository.hasRequiredData.mockRejectedValue(
-        new Error("Some error")
-      );
+      mockRepository.hasRequiredData.mockRejectedValue(new Error("Some error"));
 
       // Act
       const result = await useCase.execute();
@@ -70,6 +75,17 @@ describe("CheckDataAvailabilityUseCase", () => {
 
       // Assert
       expect(result).toBe(false);
+      expect(mockRepository.hasRequiredData).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle repository returning delayed response", async () => {
+      // Arrange
+      mockRepository.hasRequiredData.mockImplementation(
+        () => new Promise((resolve) => setTimeout(() => resolve(true), 10))
+      );
+
+      // Act & Assert
+      await expect(useCase.execute()).resolves.toBe(true);
       expect(mockRepository.hasRequiredData).toHaveBeenCalledTimes(1);
     });
   });
