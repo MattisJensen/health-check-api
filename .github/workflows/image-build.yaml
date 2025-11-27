@@ -26,6 +26,7 @@ env:
 
 jobs:
   build-and-push:
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -55,7 +56,7 @@ jobs:
         with:
           context: .
           file: Dockerfile
-          push: true
+          push: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
           platforms: linux/amd64,linux/arm64
           tags: |
             ghcr.io/${{ env.OWNER_LOWER }}/${{ env.IMAGE_NAME }}:latest
