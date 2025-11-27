@@ -9,6 +9,20 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  app:
+    image: ghcr.io/mattisjensen/health-check-api:latest
+    environment:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: health_check_api
+      DB_USER: postgres
+      DB_PASSWORD: 1234
+      TABLE_TASK: task
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
 
 volumes:
   postgres_data:
