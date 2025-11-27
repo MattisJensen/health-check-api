@@ -12,7 +12,7 @@ services:
   app:
     image: ghcr.io/mattisjensen/health-check-api:latest
     environment:
-      DB_HOST: localhost
+      DB_HOST: postgres
       DB_PORT: 5432
       DB_NAME: health_check_api
       DB_USER: postgres
