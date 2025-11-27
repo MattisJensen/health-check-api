@@ -5,22 +5,50 @@ import { CheckDataAvailabilityUseCase } from "../application/checkDataAvailabili
 import { HealthStatusDTO } from "./dto/healthStatusDTO.js";
 
 export function createHealthCheckRouter(
-  dbUseCase: CheckDatabaseConnectionUseCase,
-  dataUseCase: CheckDataAvailabilityUseCase
+  dbConnectionUseCase: CheckDatabaseConnectionUseCase,
+  dataAvailabilityUseCase: CheckDataAvailabilityUseCase
 ) {
   const router = Router();
 
   router.get("/", async (req: Request, res: Response) => {
+    const rawQuery = req.query.query;
+
+    // Verify Query
+    const query = typeof rawQuery === "string" ? rawQuery : undefined;
+    const validQueryParams = ["database", "data"];
+    if (query && !validQueryParams.includes(query)) {
+      return res.sendStatus(400);
+    }
+
+    // Return Health Check
     const status = new HealthStatusDTO();
 
+    if (query === "database") {
+      try {
+        status.db_connected = await dbConnectionUseCase.execute();
+      } catch {
+        status.db_connected = false;
+      }
+      return res.status(200).json(status);
+    }
+
+    if (query === "data") {
+      try {
+        status.has_data = await dataAvailabilityUseCase.execute();
+      } catch {
+        status.has_data = false;
+      }
+      return res.status(200).json(status);
+    }
+
     try {
-      status.db_connected = await dbUseCase.execute();
+      status.db_connected = await dbConnectionUseCase.execute();
     } catch {
       status.db_connected = false;
     }
 
     try {
-      status.has_data = await dataUseCase.execute();
+      status.has_data = await dataAvailabilityUseCase.execute();
     } catch {
       status.has_data = false;
     }
