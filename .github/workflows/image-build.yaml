@@ -1,0 +1,61 @@
+name: Image Build
+
+# Workflow triggers
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "Dockerfile"
+      - "src/**"
+      - "package.json"
+      - "package-lock.json"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "Dockerfile"
+      - "src/**"
+      - "package.json"
+      - "package-lock.json"
+
+# Environment Variables
+env:
+  IMAGE_NAME: health-check-api # lower case
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          # Authenticate with GitHub Container Registry
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Transform github repo owner to lowercase
+      - name: Transform repo owner to lowercase
+        run: echo "OWNER_LOWER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      # Building and pushing application image go to: GitHub -> Profile -> Packages
+      - name: Build & Push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ env.OWNER_LOWER }}/${{ env.IMAGE_NAME }}:latest
+            ghcr.io/${{ env.OWNER_LOWER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
