@@ -1,17 +1,17 @@
 # health-check-api
 
-The api can be spin up with a test db using the provided [docker-compose.yaml](./docker-compose.yaml) file.
+The API can be spun up with a test database using the provided [docker-compose.yaml](./docker-compose.yaml) file.
 
 - Further instructions are provided in [project-setup.md](./project-setup.md).
 
 To use the image, refer to [.env.example](./.env.example) for the required environment variables.
 
 ## Workflow
-Using Github Actions the project automatically builds an image when changes to code are pushed to the main branch. The image can be pulled from `ghcr.io/mattisjensen/health-check-api:latest`
+Using GitHub Actions the project automatically builds an image when changes to code are pushed to the main branch. The image can be pulled from `ghcr.io/mattisjensen/health-check-api:latest`
 
 On Pull Requests
-- tests are run to ensure code quality and functionality before allowing a merge to main.
-- the image is built to ensure that the code builds correctly, but not pushed to the registry.
+- Tests are run to ensure code quality and functionality before allowing a merge to main.
+- The image is built to ensure that the code builds correctly, but not pushed to the registry.
 
 ## Architecture
 
