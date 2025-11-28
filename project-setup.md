@@ -1,4 +1,6 @@
 ## Setup PostgreSQL
+The [docker-compose.yaml](./docker-compose.yaml) file sets up a PostgreSQL database toegther with the health-check-api service.
+
 ### Spin Up the Environment
 #### Start Docker Containers
 ```zsh
