@@ -1,8 +1,23 @@
 ## Setup PostgreSQL
 ### Spin Up the Environment
+#### Start Docker Containers
 ```zsh
 docker-compose up -d
 ```
+
+#### Stop Docker Containers
+```zsh
+docker-compose down
+```
+
+### Access Endpoints
+#### Without Parameters
+- Entire Health Check: [http://localhost:3000/api/health](http://localhost:3000/api/health)
+
+#### With Parameters
+- Database Connection Health Check: [http://localhost:3000/api/health?query=database](http://localhost:3000/api/health?query=database)
+- Data Existence in `task` Table Health Check: [http://localhost:3000/api/health?query=data](http://localhost:3000/api/health?query=data)
+
 
 ### Create Table
 #### Connect to PostgreSQL
@@ -36,4 +51,14 @@ INSERT INTO task (brief, description) VALUES
 #### Verify Data Insertion
 ```sql
 SELECT * FROM task;
+```
+
+#### Delete Sample Data
+```sql
+DELETE FROM task;
+```
+
+#### Delete `task` Table
+```sql
+DROP TABLE task;
 ```
