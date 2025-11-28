@@ -21,7 +21,10 @@ In combination with dependency injection, this allows for flexible swapping of i
 
 ![Clean Architecture](img/clean-architecture.png)
 
+As can be seen on the following diagram, Clean Architecture is separating the project into layers with clear responsibilities and dependency rules.
 
+For instance, the router, which handles incoming requests, depends on the use case layer to execute business logic. The use case layer interacts with the repository interface to fetch data, without knowing the implementation details of how the data is fetched.
 
-The following illustrates how clean architecture got applied to the project with dependency injection to inject the repository implementation into the use case layer.
+Compared to a traditional three-tier layered architecture, Clean Architecture enforces that dependencies only point inwards towards the core business rules. This prevents unwanted coupling between outer layers, for example the database and the core, enhancing maintainability and testability.
+
 ![repo-injection](img/repo-injection.png)
