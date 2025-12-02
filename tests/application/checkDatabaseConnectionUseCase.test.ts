@@ -14,7 +14,6 @@ describe("CheckDatabaseConnectionUseCase", () => {
   let mockRepository: jest.Mocked<HealthCheckRepository>;
 
   beforeEach(() => {
-    // Mock repository with proper type safety
     mockRepository = {
       hasRequiredData: jest.fn(),
       isDatabaseConnected: jest.fn(),
